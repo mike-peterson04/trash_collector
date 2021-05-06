@@ -1,5 +1,6 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 from .models import Customer
 # Create your views here.
 
@@ -42,4 +43,14 @@ def account_info(request):
 
 def onboard(request):
     user = request.user
-    return render(request, 'customers/onboard.html')
+    if request.method == 'POST':
+        user_id = user.id
+        day = request.POST.get('day')
+        name = request.POST.get('name')
+        address = request.POST.get('address')
+        zip = request.POST.get('zip')
+        new_customer = Customer(name=name, user=user, pickup_day=day,address=address,zipcode=zip)
+        new_customer.save()
+        return HttpResponseRedirect(reverse('customers:index'))
+    else:
+        return render(request, 'customers/onboard.html')
