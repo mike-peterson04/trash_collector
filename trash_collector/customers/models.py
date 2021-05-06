@@ -7,10 +7,11 @@ from django.db import models
 class Customer(models.Model):
     name = models.CharField(max_length=50)
     user = models.ForeignKey('accounts.User', blank=True, null=True, on_delete=models.CASCADE)
-    pickup_day = models.CharField(max_length=10)
-    one_time_pickup = models.DateField()
-    account_balance = models.FloatField()
-    suspension_start_stop = models.BooleanField()
-    zipcode = models.CharField(max_length=15)
-    address = models.CharField(max_length=50)
+    pickup_day = models.CharField(max_length=10,blank=True, null=True)
+    one_time_pickup = models.DateField(blank=True, null=True)
+    account_balance = models.FloatField(default=0.00)
+    suspension = models.BooleanField(default=False)
+    suspension_end = models.DateField(blank=True, null=True)
+    zipcode = models.CharField(max_length=15, blank=True, null=True)
+    address = models.CharField(max_length=50, blank=True, null=True)
 
