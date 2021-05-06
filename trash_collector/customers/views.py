@@ -13,7 +13,16 @@ def index(request):
     # This will allow you to later query the database using the logged-in user,
     # thereby finding the customer/employee profile that matches with the logged-in user.
     print(user)
-    return render(request, 'customers/index.html')
+    try:
+        customer = Customer.objects.get(user=user.id)
+        customer = {
+            "customer": True
+        }
+    except:
+        customer = {
+            "customer": False
+        }
+    return render(request, 'customers/index.html', customer)
 
 
 def pickup_day(request):
