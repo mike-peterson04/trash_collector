@@ -14,3 +14,18 @@ def index(request):
     # thereby finding the customer/employee profile that matches with the logged-in user.
     print(user)
     return render(request, 'customers/index.html')
+
+
+def pickup_day(request):
+    user = request.user
+    return render(request, 'customers/pickup_day.html')
+
+
+def suspend(request):
+    user = request.user
+    return render(request, 'customers/suspend.html')
+
+
+def account_info(request):
+    user = request.user
+    return render(request, 'customers/account_info.html')
