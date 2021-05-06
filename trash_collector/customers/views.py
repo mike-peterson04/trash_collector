@@ -29,3 +29,8 @@ def suspend(request):
 def account_info(request):
     user = request.user
     return render(request, 'customers/account_info.html')
+
+
+def onboard(request):
+    user = request.user
+    return render(request, 'customers/onboard.html')
