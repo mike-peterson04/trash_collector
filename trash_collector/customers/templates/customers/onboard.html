@@ -26,7 +26,14 @@
         <td><form action="{% url 'customers:onboard' %}" method="post">
     {% csrf_token %}
 Name:<input type="text" name="name" id="name" class="btn btn-dark"><br>
-Pickup Day:<input type="text" name="day" id="day" class="btn btn-dark"><br>
+<div>Pickup Day: <select name="day" id="day" type="text" class="btn btn-dark">Pickup Day:
+    <option value="Monday">Monday</option>
+    <option value="Tuesday">Tuesday</option>
+    <option value="Wednesday">Wednesday</option>
+    <option value="Thursday">Thursday</option>
+    <option value="Friday">Friday</option>
+</select>
+    </div>
 Address:<input type="text" name="address" id="address" class="btn btn-dark"><br>
 Zipcode:<input type="text" name="zip" id="zip" class="btn btn-dark"><br>
 <input type="submit" value="Complete Registration" class="btn btn-dark">
