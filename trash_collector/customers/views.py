@@ -37,7 +37,8 @@ def suspend(request):
     if request.method == 'POST':
         context['customer'].suspension_start = request.POST.get('start_date')
         context['customer'].suspension_end = request.POST.get('end_date')
-        if datetime.date(context['customer'].suspension_start) > date.today():
+        date_check = context['customer'].suspension_start.split('-')
+        if datetime.date(int(date_check[0]), int(date_check[1]), int(date_check[2])) > date.today():
             context['customer'].suspension = False
         else:
             context['customer'].suspension = True
