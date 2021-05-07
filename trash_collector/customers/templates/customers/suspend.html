@@ -15,15 +15,30 @@
 </li>
 {% endblock %}
 
-{% block header %} Customer Home {% endblock %}
+{% block header %} Suspension status {% endblock %}
 
 {% block content %}
   {% if customer_exists != True and user.is_authenticated %}
     Hey we see you aren't registered yet. Click below for onboarding!
     <a href="{% url 'customers:onboard' %}">Onboard</a>
   {% elif user.is_authenticated %}
-    Hello Customer {{ user.username }}!
-  {% else %}
+  <h1 align="center">Hello {{ user.username }}!</h1><br>
+    <table align="center" width="80%">
+        <tr>
+            <td><h3 align="center">Suspension status</h3></td>
+            <td><form action="{% url 'customers:suspend' %}" method="post">
+        {% csrf_token %}
+    Name:<input type="text" name="name" id="name" class="btn btn-dark" value="{{ customer.name }}" ><br>
+    <div>
+        <h3>What day would you like to start suspending your service?</h3><br><input type="date" id="start_date" name="start_date"><br>
+        <h3>What day would you like to resume your service?</h3><br><input type="date" id="end_date" name="end_date"><br>
+        </div>
+    Address:<input type="text" name="address" id="address" class="btn btn-dark" value="{{ customer.address }}" ><br>
+    Zipcode:<input type="text" name="zip" id="zip" class="btn btn-dark" value="{{ customer.zipcode }}" ><br>
+    <input type="submit" value="Apply" class="btn btn-dark">
+    </form></td>
+        </tr>
+    </table>  {% else %}
     <p>You are at the customer index, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>
     <a href="{% url 'accounts:register' %}">Sign Up</a>
