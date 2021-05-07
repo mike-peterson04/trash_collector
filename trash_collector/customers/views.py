@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from .models import Customer
+from datetime import date, datetime
 
 # Create your views here.
 
@@ -32,7 +33,18 @@ def pickup_day(request):
 
 def suspend(request):
     user = request.user
-    return render(request, 'customers/suspend.html')
+    context = context_gen(user)
+    if request.method == 'POST':
+        context['customer'].suspension_start = request.POST.get('start_date')
+        context['customer'].suspension_end = request.POST.get('end_date')
+        if datetime.date(context['customer'].suspension_start) > date.today():
+            context['customer'].suspension = False
+        else:
+            context['customer'].suspension = True
+        context['customer'].save()
+        return HttpResponseRedirect(reverse('customers:suspend'))
+
+    return render(request, 'customers/suspend.html', context)
 
 
 def account_info(request):
