@@ -21,7 +21,8 @@ def index(request):
 
 def pickup_day(request):
     user = request.user
-    return render(request, 'customers/pickup_day.html')
+    context = context_gen(user)
+    return render(request, 'customers/pickup_day.html',context)
 
 
 def suspend(request):

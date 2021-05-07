@@ -5,24 +5,46 @@
 
 {% block navbar %}
 <li class="nav-item">
-  <a class="nav-link active" href="{% url 'customers:pickup_day' %}">Service Day</a>
+  <a class="nav-link" href="{% url 'customers:pickup_day' %}">Service Day</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="{% url 'customers:suspend' %}}">Schedule Suspension</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'customers:account_info' %}">Account Info</a>
+  <a class="nav-link active" href="{% url 'customers:account_info' %}">Account Info</a>
 </li>
 {% endblock %}
 
-{% block header %} Customer Home {% endblock %}
+{% block header %} Account Info {% endblock %}
 
 {% block content %}
   {% if customer_exists != True and user.is_authenticated %}
     Hey we see you aren't registered yet. Click below for onboarding!
     <a href="{% url 'customers:onboard' %}">Onboard</a>
   {% elif user.is_authenticated %}
-    Hello Customer {{ user.username }}!
+    <h1 align="center">Hello {{ user.username }}!</h1><br>
+    <table align="center" width="80%">
+        <tr>
+            <td width = "100%" colspan="2"><h3 align="center">Your regular pickup day is scheduled for: {{ customer.pickup_day }}</h3>
+        </td>
+        </tr>
+      <tr>
+        {% if customer.one_time_pickup != None %}
+        <td colspan="2">
+          <h3> You currently have a one time pickup scheduled for {{customer.one_time_pickup}}</h3>
+          {% else %}
+          <td><h3 align="center">Please let us know if you want to schedule a one time pickup</h3></td>
+        <td><form action="{% url 'customers:pickup_day' %}" method="post">
+        {% csrf_token %}
+          <h3>What day should we come:</h3><br><input type="date"><br>
+            <input type="submit" value="Update Account Info" class="btn btn-dark">
+        </form>
+          {% endif %}
+
+        </td>
+
+      </tr>
+    </table>
   {% else %}
     <p>You are at the customer index, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>
