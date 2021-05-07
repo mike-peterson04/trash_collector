@@ -15,14 +15,34 @@
 </li>
 {% endblock %}
 
-{% block header %} Customer Home {% endblock %}
+{% block header %} Account Info {% endblock %}
 
 {% block content %}
-  {% if customer != True and user.is_authenticated %}
+  {% if customer_exists != True and user.is_authenticated %}
     Hey we see you aren't registered yet. Click below for onboarding!
     <a href="{% url 'customers:onboard' %}">Onboard</a>
   {% elif user.is_authenticated %}
-    Hello Customer {{ user.username }}!
+    <h1 align="center">Hello {{ user.username }}!</h1><br>
+    <table align="center" width="80%">
+        <tr>
+            <td><h3 align="center">Please fill out the following information so we can start your trash collection service</h3></td>
+            <td><form action="{% url 'customers:onboard' %}" method="post">
+        {% csrf_token %}
+    Name:<input type="text" name="name" id="name" class="btn btn-dark" value="{{ user.name }}" ><br>
+    <div>Pickup Day: <select name="day" id="day" type="text" class="btn btn-dark">Pickup Day:
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+    </select>
+        </div>
+    Address:<input type="text" name="address" id="address" class="btn btn-dark" value="{{ user.address }}" ><br>
+    Zipcode:<input type="text" name="zip" id="zip" class="btn btn-dark" value="{{ user.zipcode }}" ><br>
+    <input type="submit" value="Update Account Info" class="btn btn-dark">
+    </form></td>
+        </tr>
+    </table>
   {% else %}
     <p>You are at the customer index, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>
