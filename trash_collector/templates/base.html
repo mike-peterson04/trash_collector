@@ -24,13 +24,7 @@
   </div>
 </nav>
 {% if user.is_authenticated %}
-  {% for group in user.groups.all%}
-    {% if group.name == "Customers" %}
-    <p>Customer Navbar</p>
-    {% elif group.name == "Employees" %}
-    <p>Employee Navbar</p>
-    {% endif %}
-  {% endfor %}
+<br>
   <p><a href="{% url 'logout' %}">Log Out</a></p>
 {% endif %}
   <main>
