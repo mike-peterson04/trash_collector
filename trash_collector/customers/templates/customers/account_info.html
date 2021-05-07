@@ -30,11 +30,12 @@
         {% csrf_token %}
     Name:<input type="text" name="name" id="name" class="btn btn-dark" value="{{ customer.name }}" ><br>
     <div>Pickup Day: <select name="day" id="day" type="text" class="btn btn-dark">Pickup Day:
-        <option value="Monday">Monday</option>
-        <option value="Tuesday">Tuesday</option>
-        <option value="Wednesday">Wednesday</option>
-        <option value="Thursday">Thursday</option>
-        <option value="Friday">Friday</option>
+        <option value="{{ customer.pickup_day }}" selected hidden>{{ customer.pickup_day }}</option>
+        <option value="Monday" >Monday</option>
+        <option value="Tuesday" >Tuesday</option>
+        <option value="Wednesday" >Wednesday</option>
+        <option value="Thursday" >Thursday</option>
+        <option value="Friday" >Friday</option>
     </select>
         </div>
     Address:<input type="text" name="address" id="address" class="btn btn-dark" value="{{ customer.address }}" ><br>
