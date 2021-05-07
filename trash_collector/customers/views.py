@@ -50,7 +50,7 @@ def onboard(request):
         name = request.POST.get('name')
         address = request.POST.get('address')
         zip = request.POST.get('zip')
-        new_customer = Customer(name=name, user=user, pickup_day=day,address=address,zipcode=zip)
+        new_customer = Customer(name=name, user=user, pickup_day=day, address=address, zipcode=zip)
         new_customer.save()
         return HttpResponseRedirect(reverse('customers:index'))
     else:
@@ -67,6 +67,6 @@ def context_gen(user):
     except:
         context = {
             "customer_exists": False,
-            "customer": Customer(name='null', user=user, pickup_day="null",address='address',zipcode='zip')
+            "customer": Customer(name='null', user=user, pickup_day="null", address='address', zipcode='zip')
         }
     return context
