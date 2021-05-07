@@ -14,16 +14,9 @@ def index(request):
     # This will allow you to later query the database using the logged-in user,
     # thereby finding the customer/employee profile that matches with the logged-in user.
     print(user)
-    try:
-        customer = Customer.objects.get(user=user.id)
-        customer = {
-            "customer": True
-        }
-    except:
-        customer = {
-            "customer": False
-        }
-    return render(request, 'customers/index.html', customer)
+    context = context_gen(user)
+
+    return render(request, 'customers/index.html', context)
 
 
 def pickup_day(request):
@@ -38,7 +31,15 @@ def suspend(request):
 
 def account_info(request):
     user = request.user
-    return render(request, 'customers/account_info.html')
+    context = context_gen(user)
+    if request.method == 'POST':
+        context['customer'].pickup_day = request.POST.get('day')
+        context['customer'].name = request.POST.get('name')
+        context['customer'].address = request.POST.get('address')
+        context['customer'].zipcode = request.POST.get('zip')
+        context['customer'].save()
+        return HttpResponseRedirect(reverse('customers:index'))
+    return render(request, 'customers/account_info.html', context)
 
 
 def onboard(request):
@@ -54,3 +55,18 @@ def onboard(request):
         return HttpResponseRedirect(reverse('customers:index'))
     else:
         return render(request, 'customers/onboard.html')
+
+
+def context_gen(user):
+    try:
+        customer = Customer.objects.get(user=user.id)
+        context = {
+            "customer_exists": True,
+            "customer": customer
+        }
+    except:
+        context = {
+            "customer_exists": False,
+            "customer": Customer(name='null', user=user, pickup_day="null",address='address',zipcode='zip')
+        }
+    return context

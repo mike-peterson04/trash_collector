@@ -18,7 +18,7 @@
 {% block header %} Customer Home {% endblock %}
 
 {% block content %}
-  {% if customer != True and user.is_authenticated %}
+  {% if customer_exists != True and user.is_authenticated %}
     Hey we see you aren't registered yet. Click below for onboarding!
     <a href="{% url 'customers:onboard' %}">Onboard</a>
   {% elif user.is_authenticated %}
