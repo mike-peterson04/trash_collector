@@ -36,7 +36,7 @@
           <td><h3 align="center">Please let us know if you want to schedule a one time pickup</h3></td>
         <td><form action="{% url 'customers:pickup_day' %}" method="post">
         {% csrf_token %}
-          <h3>What day should we come:</h3><br><input type="date"><br>
+          <h3>What day should we come:</h3><br><input type="date" id="date" name="date"><br>
             <input type="submit" value="Update Account Info" class="btn btn-dark">
         </form>
           {% endif %}

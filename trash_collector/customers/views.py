@@ -24,10 +24,10 @@ def pickup_day(request):
     user = request.user
     context = context_gen(user)
     if request.method == 'POST':
-        context['customer'].one_time_pickup = request.POST.get('one_time_pickup')
+        context['customer'].one_time_pickup = request.POST.get('date')
         context['customer'].save()
-        return HttpResponseRedirect(reverse('customers:index'))
-    return render(request, 'customers/pickup_day.html')
+        return HttpResponseRedirect(reverse('customers:pickup_day'))
+    return render(request, 'customers/pickup_day.html', context)
 
 
 def suspend(request):
