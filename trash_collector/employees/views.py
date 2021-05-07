@@ -1,16 +1,19 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
+from .models import Employee
 from django.apps import apps
+import datetime
 
 # Create your views here.
-
-# TODO: Create a function for each path created in employees/urls.py. Each will need a template as well.
 
 
 def index(request):
     # Get the Customer model from the other app, it can now be used to query the db
     Customer = apps.get_model('customers.Customer')
-    return render(request, 'employees/index.html')
+    user = request.user
+    context = context_gen(user)
+    return render(request, 'employees/index.html', context)
 
 
 def todays_route(request):
@@ -23,3 +26,31 @@ def future_route(request):
 
 def customers_in_area(request):
     return
+
+
+def onboard(request):
+    user = request.user
+    context = context_gen(user)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        zip = request.POST.get('zip')
+        new_employee = Employee(name=name, user=user, area=zip)
+        new_employee.save()
+        return HttpResponseRedirect(reverse('employees:index'))
+    else:
+        return render(request, 'employees/onboard.html', context)
+
+
+def context_gen(user):
+    try:
+        employee = Employee.objects.get(user=user.id)
+        context = {
+            "employee_exists": True,
+            "employee": employee
+        }
+    except:
+        context = {
+            "employee_exists": False,
+            "employee": Employee(name='null', user=user, area='zip')
+        }
+    return context
