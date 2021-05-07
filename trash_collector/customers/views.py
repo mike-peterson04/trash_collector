@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from .models import Customer
-from datetime import date, datetime
+import datetime
 
 # Create your views here.
 
@@ -38,7 +38,12 @@ def suspend(request):
         context['customer'].suspension_start = request.POST.get('start_date')
         context['customer'].suspension_end = request.POST.get('end_date')
         date_check = context['customer'].suspension_start.split('-')
-        if datetime.date(int(date_check[0]), int(date_check[1]), int(date_check[2])) > date.today():
+        count = 0
+        for x in date_check:
+            date_check[count] = int(x)
+            count += 1
+
+        if datetime.datetime(date_check[0], date_check[1], date_check[2]) > datetime.datetime.now():
             context['customer'].suspension = False
         else:
             context['customer'].suspension = True
