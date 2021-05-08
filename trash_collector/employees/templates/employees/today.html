@@ -3,7 +3,7 @@
 {% block title %}{% block header %} Employee Home {% endblock %}{% endblock %}
 {% block navbar %}
 <li class="nav-item">
-  <a class="nav-link" href="#">Today's Schedule</a>
+  <a class="nav-link" href="{% url 'employees:today' %}">Today's Schedule</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="#">Future Routes</a>
@@ -17,7 +17,23 @@
     Click below for employee orientation!
     <a href="{% url 'employees:onboard' %}">Onboard</a>
   {% elif user.is_authenticated %}
-    Hello Employee {{ user.username }}!
+<h3>Hello Employee {{ user.username }}!</h3><br>
+<h4>Your schedule for today is:</h4>
+<ul>
+{% for customer in customers %}
+  <li>
+    <ul>
+      <li>{{customer.name}}</li>
+      <li>{{customer.address}}</li>
+      {% if customer.pickup_day != day %}
+      <ul>
+      <li>This is a One Time Pickup</li>
+      </ul>
+      {% endif %}
+    </ul>
+  </li>
+{% endfor %}
+  </ul>
   {% else %}
     <p>You are at the employee Daily Schedule, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>

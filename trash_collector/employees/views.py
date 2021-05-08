@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from .models import Employee
 from django.apps import apps
+from django.db.models import Q
 import datetime
 
 # Create your views here.
@@ -19,7 +20,13 @@ def index(request):
 def todays_route(request):
     user = request.user
     context = context_gen(user)
-
+    day = datetime.datetime.now()
+    day = day.strftime("%A")
+    date = datetime.date.today()
+    Customer = apps.get_model('customers.Customer')
+    result = Customer.objects.filter(Q(pickup_day=day)|Q(one_time_pickup=date))
+    context['customers'] = result
+    context['day'] = day
     return render(request, 'employees/today.html', context)
 
 
@@ -57,3 +64,6 @@ def context_gen(user):
             "employee": Employee(name='null', user=user, area='zip')
         }
     return context
+
+def build_users():
+    pass
