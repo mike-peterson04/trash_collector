@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}{% block header %} Employee Home {% endblock %}{% endblock %}
+{% block navbar %}
+<li class="nav-item">
+  <a class="nav-link" href="#">Today's Schedule</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="#">Future Routes</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="#">Assigned Customers</a>
+</li>
+{% endblock %}
+{% block content %}
+  {% if user.is_authenticated and employee_exists != True  %}
+    Click below for employee orientation!
+    <a href="{% url 'employees:onboard' %}">Onboard</a>
+  {% elif user.is_authenticated %}
+    Hello Employee {{ user.username }}!
+  {% else %}
+    <p>You are at the employee Daily Schedule, but you are not logged in.</p>
+    <a href="{% url 'login' %}">Log In</a>
+    <a href="{% url 'accounts:register' %}">Sign Up</a>
+  {% endif %}
+{% endblock %}

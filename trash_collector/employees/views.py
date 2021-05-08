@@ -17,7 +17,10 @@ def index(request):
 
 
 def todays_route(request):
-    return
+    user = request.user
+    context = context_gen(user)
+
+    return render(request, 'employees/today.html', context)
 
 
 def future_route(request):
