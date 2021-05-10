@@ -3,10 +3,10 @@
 {% block title %}{% block header %} Employee Home {% endblock %}{% endblock %}
 {% block navbar %}
 <li class="nav-item">
-  <a class="nav-link active" href="{% url 'employees:today' %}">Today's Schedule</a>
+  <a class="nav-link" href="{% url 'employees:today' %}">Today's Schedule</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'employees:scheduler' %}">Future Routes</a>
+  <a class="nav-link" href="#">Future Routes</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="#">Assigned Customers</a>
@@ -18,8 +18,13 @@
     <a href="{% url 'employees:onboard' %}">Onboard</a>
   {% elif user.is_authenticated %}
 <h3>Hello Employee {{ user.username }}!</h3><br>
-<h4>Your schedule for today is:</h4>
-<ul>
+     <tr>
+        <td><h3 align="center">What day would you like to see?</h3></td>
+        <td><form action="{% url 'employees:scheduler' %}" method="post">
+    {% csrf_token %}
+  <input type="date" name="date" id="date"><br>
+  <input type="submit" value="View schedule" class="btn btn-dark">
+  </form></td>
 {% for customer in customers %}
   <li>
     <ul>
