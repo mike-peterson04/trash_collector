@@ -25,7 +25,7 @@ def todays_route(request):
     day = day.strftime("%A")
     date = datetime.date.today()
     Customer = apps.get_model('customers.Customer')
-    result = Customer.objects.filter(Q(zipcode=context["employee"].area),Q(suspension=False),Q(pickup_day=day)|Q(one_time_pickup=date))
+    result = Customer.objects.filter(Q(zipcode=context["employee"].area), Q(suspension=False), Q(pickup_day=day) | Q(one_time_pickup=date))
     context['customers'] = result
     context['day'] = day
     return render(request, 'employees/today.html', context)
