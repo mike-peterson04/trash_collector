@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
+ {% load static %}
 
+{% block script %}
+  <head>
+    <title>Add Map</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'employees/styles.css' %}" />
+    <script src="{% static 'employees/map.js' %}"></script>
+  </head>
+{% endblock %}
 {% block title %}{% block header %} Today's Schedule {% endblock %}{% endblock %}
 {% block navbar %}
 <li class="nav-item">
@@ -38,6 +46,16 @@
 {% endfor %}
   </ul>
 <input type="submit" value="Submit Pickups" class="btn btn-dark"></form>
+     <h3>Your suggested route for today!</h3>
+    <!--The div element for the map -->
+    <div id="map"></div>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkuAhUeBFa0GtaW7whg-gZt0qVodwvEEE&callback=initMap"
+      async
+    ></script>
+
   {% else %}
     <p>You are at the employee Daily Schedule, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>
