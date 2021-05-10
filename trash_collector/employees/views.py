@@ -25,7 +25,8 @@ def todays_route(request):
     day = day.strftime("%A")
     date = datetime.date.today()
     Customer = apps.get_model('customers.Customer')
-    result = Customer.objects.filter(Q(zipcode=context["employee"].area),Q(suspension=False),Q(pickup_day=day)|Q(one_time_pickup=date))
+    result = Customer.objects.filter(Q(zipcode=context["employee"].area),Q(suspension=False),
+                                     Q(pickup_day=day)|Q(one_time_pickup=date))
     context['customers'] = result
     context['day'] = day
     return render(request, 'employees/today.html', context)
@@ -36,11 +37,22 @@ def future_route(request):
     user = request.user
     context = context_gen(user)
     if request.method == 'POST':
-
+        date = request.POST.get('date')
+        date_check = date.split('-')
+        count = 0
+        for x in date_check:
+            date_check[count] = int(x)
+            count += 1
+        date = datetime.datetime(date_check[0], date_check[1], date_check[2])
+        day = date.strftime("%A")
+        Customer = apps.get_model('customers.Customer')
+        result = Customer.objects.filter(Q(zipcode=context["employee"].area), Q(suspension=False),
+                                         Q(pickup_day=day) | Q(one_time_pickup=date))
+        context['customers'] = result
+        context['day'] = day
         return render(request, 'employees/scheduler.html', context)
     else:
         context['customer'] = None
-
         return render(request, 'employees/scheduler.html', context)
 
 
