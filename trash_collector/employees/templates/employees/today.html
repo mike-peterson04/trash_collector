@@ -20,11 +20,14 @@
 <h3>Hello Employee {{ user.username }}!</h3><br>
 <h4>Your schedule for today is:</h4>
 <ul>
+  <form action="{% url 'employees:today' %}" method="post">
+    {% csrf_token %}
 {% for customer in customers %}
   <li>
     <ul>
       <li>{{customer.name}}</li>
       <li>{{customer.address}}</li>
+      <li><input type="checkbox" class="form-check-input" name="{{customer.id}}" id={{customer.id}}> Pickup Completed</li>
       {% if customer.pickup_day != day %}
       <ul>
       <li>This is a One Time Pickup</li>
@@ -34,6 +37,7 @@
   </li>
 {% endfor %}
   </ul>
+<input type="submit" value="Submit Pickups" class="btn btn-dark"></form>
   {% else %}
     <p>You are at the employee Daily Schedule, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>

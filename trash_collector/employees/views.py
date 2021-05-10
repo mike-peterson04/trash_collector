@@ -20,16 +20,32 @@ def index(request):
 def todays_route(request):
     suspension_check()
     user = request.user
-    context = context_gen(user)
     day = datetime.datetime.now()
+    context = context_gen(user)
     day = day.strftime("%A")
     date = datetime.date.today()
     Customer = apps.get_model('customers.Customer')
     result = Customer.objects.filter(Q(zipcode=context["employee"].area),Q(suspension=False),
                                      Q(pickup_day=day)|Q(one_time_pickup=date))
+    if request.method=='POST':
+        for customer in result:
+            test = request.POST.getlist(str(customer.id))
+            if request.POST.get(f"{customer.id}") == 'on':
+                pickup_complete(customer)
+        context = context_gen(user)
+        return HttpResponseRedirect(reverse('employees:today'))
+
     context['customers'] = result
     context['day'] = day
     return render(request, 'employees/today.html', context)
+
+def pickup_complete(customer):
+    customer.account_balance += 10.95
+    customer.one_time_pickup = None
+    customer.suspension = True
+    customer.suspension_start = datetime.date.today()
+    customer.suspension_end = datetime.date.today() + datetime.timedelta(days=1)
+    customer.save()
 
 
 def future_route(request):
