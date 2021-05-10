@@ -39,6 +39,7 @@ def todays_route(request):
 
     context['customers'] = result
     context['day'] = day
+    context['key'] = api.google_maps_api_key
     return render(request, 'employees/today.html', context)
 
 def pickup_complete(customer):
