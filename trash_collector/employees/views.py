@@ -32,7 +32,16 @@ def todays_route(request):
 
 
 def future_route(request):
-    return
+    suspension_check()
+    user = request.user
+    context = context_gen(user)
+    if request.method == 'POST':
+
+        return render(request, 'employees/scheduler.html', context)
+    else:
+        context['customer'] = None
+
+        return render(request, 'employees/scheduler.html', context)
 
 
 def customers_in_area(request):
@@ -72,7 +81,7 @@ def suspension_check():
     dataset = Customer.objects.all()
     for customer in dataset:
         if customer.suspension == True:
-            if customer.suspension_end >= date:
+            if customer.suspension_end <= date:
                 customer.suspension = False
                 customer.suspension_start = None
                 customer.suspension_end = None
@@ -81,7 +90,7 @@ def suspension_check():
             if customer.suspension_start == None:
                 pass
             else:
-                if customer.suspension_start >= date and customer.suspension_end <= date:
+                if customer.suspension_start >= date >= customer.suspension_end:
                     customer.suspension = True
                     customer.save()
 
