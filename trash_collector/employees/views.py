@@ -4,6 +4,8 @@ from django.urls import reverse
 from .models import Employee
 from django.apps import apps
 from django.db.models import Q
+import googlemaps
+import api
 import datetime
 
 # Create your views here.
@@ -73,6 +75,15 @@ def future_route(request):
 
 
 def customers_in_area(request):
+    gmaps = googlemaps.Client(key=api.google_maps_api_key)
+    user = request.user
+    context = context_gen(user)
+    Customer = apps.get_model('customers.Customer')
+    result = Customer.objects.filter(zipcode=context["employee"].area)
+    local = []
+    for customer in result:
+        local.append(gmaps.geocode(customer.address))
+
     return
 
 
