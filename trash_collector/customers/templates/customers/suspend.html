@@ -34,7 +34,8 @@
     <input type="submit" value="Apply" class="btn btn-dark">
     </form></td>
         </tr>
-    </table>  {% else %}
+    </table>
+    {% else %}
     <p>You are at the customer index, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>
     <a href="{% url 'accounts:register' %}">Sign Up</a>
