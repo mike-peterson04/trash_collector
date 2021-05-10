@@ -18,13 +18,14 @@ def index(request):
 
 
 def todays_route(request):
+    suspension_check()
     user = request.user
     context = context_gen(user)
     day = datetime.datetime.now()
     day = day.strftime("%A")
     date = datetime.date.today()
     Customer = apps.get_model('customers.Customer')
-    result = Customer.objects.filter(Q(pickup_day=day)|Q(one_time_pickup=date))
+    result = Customer.objects.filter(Q(zipcode=context["employee"].area),Q(suspension=False),Q(pickup_day=day)|Q(one_time_pickup=date))
     context['customers'] = result
     context['day'] = day
     return render(request, 'employees/today.html', context)
@@ -65,5 +66,23 @@ def context_gen(user):
         }
     return context
 
-def build_users():
-    pass
+def suspension_check():
+    Customer = apps.get_model('customers.Customer')
+    date = datetime.date.today()
+    dataset = Customer.objects.all()
+    for customer in dataset:
+        if customer.suspension == True:
+            if customer.suspension_end >= date:
+                customer.suspension = False
+                customer.suspension_start = None
+                customer.suspension_end = None
+                customer.save()
+        else:
+            if customer.suspension_start == None:
+                pass
+            else:
+                if customer.suspension_start >= date and customer.suspension_end <= date:
+                    customer.suspension = True
+                    customer.save()
+
+
