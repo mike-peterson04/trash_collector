@@ -17,7 +17,7 @@
   <a class="nav-link" href="{% url 'employees:scheduler' %}">Future Routes</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'employees:customers_in_area' %}">Assigned Customers</a>
+  <a class="nav-link" href="{% url 'employees:area' %}">Assigned Customers</a>
 </li>
 {% endblock %}
 {% block content %}
@@ -30,10 +30,10 @@
 <ul>
   <li>
     <ul>
-      <li>{{customer.name}}</li>
-      <li>{{customer.address}}</li>
-        <li>{{customer.zipcode</li>
-        <li>{{customer.balance}}</li>
+      <li>Name: {{customer.name}}</li>
+      <li>Address: {{customer.address}}</li>
+        <li>Zipcode: {{customer.zipcode}}</li>
+        <li>Account Balance: {{customer.balance}}</li>
         {% if customer.suspension %}
         <li>Account currently suspended</li>
         {% else %}
