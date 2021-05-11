@@ -41,8 +41,9 @@ def todays_route(request):
     lat = 3.3
     long = 3.3
     for x in result:
-        lat = x.lat
-        long = x.lng
+        a = get_coord(x)
+        lat = a['lat']
+        long = a['lng']
     context['lat'] = lat
     context['long'] = long
     context['day'] = day

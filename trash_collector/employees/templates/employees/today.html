@@ -59,7 +59,16 @@
   center:new google.maps.LatLng({{lat}},{{long}}),
   zoom:15,
   }
-  var map = new google.maps.Map(document.getElementById("map"),mapProp);}
+  var map = new google.maps.Map(document.getElementById("map"),mapProp);
+
+  {% for customer in customers %}
+  let latlng{{customer.id}} = {lat:{{customer.lat}}, lng:{{customer.lng}}}
+  let marker{{customer.id}} = new google.maps.Marker({position:latlng{{customer.id}}});
+  marker{{customer.id}}.setMap(map);
+
+  {% endfor %}
+
+  }
 </script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=buildMap"
