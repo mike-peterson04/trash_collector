@@ -53,8 +53,16 @@
     <div id="map"></div>
 
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<script>
+  function buildMap(){
+  var mapProp= {
+  center:new google.maps.LatLng({{lat}},{{long}}),
+  zoom:15,
+  }
+  var map = new google.maps.Map(document.getElementById("map"),mapProp);}
+</script>
     <script
-      src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap({{lat}},{{long}})"
+      src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=buildMap"
 
       async
     ></script>
