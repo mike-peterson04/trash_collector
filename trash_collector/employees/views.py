@@ -83,17 +83,16 @@ def future_route(request):
 
 
 def customers_in_area(request):
-
     user = request.user
     context = context_gen(user)
     Customer = apps.get_model('customers.Customer')
     result = Customer.objects.filter(zipcode=context["employee"].area)
-    geo = []
-    count = 0
-    for customer in result:
-        geo.append(get_coord(customer))
-        count += 1
-    context['coord'] = geo
+    if request.method == 'POST':
+        for customer in result:
+            if request.POST.get(f"{customer.id}") == 'on':
+                pickup_complete(customer)
+        return HttpResponseRedirect(reverse('employees:area'))
+    context['customers'] = result
     return render(request, 'employees/area.html', context)
 
 

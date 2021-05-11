@@ -17,7 +17,7 @@
   <a class="nav-link" href="{% url 'employees:scheduler' %}">Future Routes</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'employees:customers_in_area' %}">Assigned Customers</a>
+  <a class="nav-link" href="{% url 'employees:area' %}">Assigned Customers</a>
 </li>
 {% endblock %}
 {% block content %}
@@ -26,7 +26,7 @@
     <a href="{% url 'employees:onboard' %}">Onboard</a>
   {% elif user.is_authenticated %}
 <h3>Hello Employee {{ user.username }}!</h3><br>
-<h4>Your schedule for today is:</h4>
+<h4>Here are all the customers in your area</h4>
 <ul>
   <form action="{% url 'employees:today' %}" method="post">
     {% csrf_token %}
@@ -35,26 +35,11 @@
     <ul>
       <li>{{customer.name}}</li>
       <li>{{customer.address}}</li>
-      <li><input type="checkbox" class="form-check-input" name="{{customer.id}}" id={{customer.id}}> Pickup Completed</li>
-      {% if customer.pickup_day != day %}
-      <ul>
-      <li>This is a One Time Pickup</li>
-      </ul>
-      {% endif %}
+      <li><input type="submit" value="View Customer" class="btn btn-dark" name="{{customer.id}}" id={{customer.id}}>View Customer</li>
     </ul>
   </li>
 {% endfor %}
-  </ul>
-<input type="submit" value="Submit Pickups" class="btn btn-dark"></form>
-     <h3>Your suggested route for today!</h3>
-    <!--The div element for the map -->
-    <div id="map"></div>
-
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap"
-      async
-    ></script>
+  </form></ul>
 
   {% else %}
     <p>You are at the employee Daily Schedule, but you are not logged in.</p>
