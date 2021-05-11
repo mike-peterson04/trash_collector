@@ -87,7 +87,7 @@ def customers_in_area(request):
         local.append(get_coord(customer.address))
         count += 1
 
-    return
+    return render(request, 'employees/area.html', context)
 
 
 def onboard(request):
