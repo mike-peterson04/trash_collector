@@ -5,19 +5,18 @@
   <head>
     <title>Add Map</title>
     <link rel="stylesheet" type="text/css" href="{% static 'employees/styles.css' %}" />
-    <script src="{% static 'employees/map.js' %}"></script>
   </head>
 {% endblock %}
 {% block title %}{% block header %} {{customer.name}} {% endblock %}{% endblock %}
 {% block navbar %}
 <li class="nav-item">
-  <a class="nav-link active" href="{% url 'employees:today' %}">Today's Schedule</a>
+  <a class="nav-link" href="{% url 'employees:today' %}">Today's Schedule</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="{% url 'employees:scheduler' %}">Future Routes</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'employees:area' %}">Assigned Customers</a>
+  <a class="nav-link active" href="{% url 'employees:area' %}">Assigned Customers</a>
 </li>
 {% endblock %}
 {% block content %}
@@ -32,7 +31,7 @@
       <li>Name: {{customer.name}}</li>
       <li>Address: {{customer.address}}</li>
         <li>Zipcode: {{customer.zipcode}}</li>
-        <li>Account Balance: {{customer.balance}}</li>
+        <li>Account Balance: {{customer.account_balance}}</li>
         {% if customer.suspension %}
         <li>Account currently suspended</li>
         {% else %}
