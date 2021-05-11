@@ -84,8 +84,10 @@ def customers_in_area(request):
     local = []
     count = 0
     for customer in result:
-        local.append(get_coord(customer.address))
+        geo = get_coord(customer.address)
+        local.append(geo[count]['geometry']['location'])
         count += 1
+    context['coord']=local
 
     return render(request, 'employees/area.html', context)
 
@@ -138,5 +140,5 @@ def suspension_check():
 
 def get_coord(address):
     gmaps = googlemaps.Client(key=api.google_maps_api_key)
-    gmaps.geocode(address)
+    return gmaps.geocode(address)
 
