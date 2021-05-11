@@ -38,6 +38,13 @@ def todays_route(request):
         return HttpResponseRedirect(reverse('employees:today'))
 
     context['customers'] = result
+    lat = 3.3
+    long = 3.3
+    for x in result:
+        lat = x.lat
+        long = x.lng
+    context['lat'] = lat
+    context['long'] = long
     context['day'] = day
     context['key'] = api.google_maps_api_key
     return render(request, 'employees/today.html', context)

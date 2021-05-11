@@ -37,6 +37,7 @@
       <li>{{customer.address}}</li>
       <li><input type="checkbox" class="form-check-input" name="{{customer.id}}" id={{customer.id}}> Pickup Completed</li>
       {% if customer.pickup_day != day %}
+
       <ul>
       <li>This is a One Time Pickup</li>
       </ul>
@@ -44,15 +45,17 @@
     </ul>
   </li>
 {% endfor %}
+    <input type="submit" value="Submit Pickups" class="btn btn-dark"></form>
   </ul>
-<input type="submit" value="Submit Pickups" class="btn btn-dark"></form>
+
      <h3>Your suggested route for today!</h3>
     <!--The div element for the map -->
     <div id="map"></div>
 
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
     <script
-      src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap"
+      src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap({{lat}},{{long}})"
+
       async
     ></script>
 
