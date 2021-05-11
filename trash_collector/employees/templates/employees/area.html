@@ -28,14 +28,14 @@
 <h3>Hello Employee {{ user.username }}!</h3><br>
 <h4>Here are all the customers in your area</h4>
 <ul>
-  <form action="{% url 'employees:today' %}" method="post">
+  <form action="{% url 'employees:customer' %}" method="post">
     {% csrf_token %}
 {% for customer in customers %}
   <li>
     <ul>
       <li>{{customer.name}}</li>
       <li>{{customer.address}}</li>
-      <li><input type="submit" value="View Customer" class="btn btn-dark" name="{{customer.id}}" id={{customer.id}}>View Customer</li>
+      <li><input type="submit" value="View Customer" class="btn btn-dark" name="{{customer.id}}" id={{customer.id}}></li>
     </ul>
   </li>
 {% endfor %}
