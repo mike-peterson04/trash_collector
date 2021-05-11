@@ -76,16 +76,18 @@ def future_route(request):
 
 
 def customers_in_area(request):
-    gmaps = googlemaps.Client(key=api.google_maps_api_key)
+
     user = request.user
     context = context_gen(user)
     Customer = apps.get_model('customers.Customer')
     result = Customer.objects.filter(zipcode=context["employee"].area)
-    local = []
+    geo = []
+    count = 0
     for customer in result:
-        local.append(gmaps.geocode(customer.address))
-
-    return
+        geo.append(get_coord(customer))
+        count += 1
+    context['coord'] = geo
+    return render(request, 'employees/area.html', context)
 
 
 def onboard(request):
@@ -133,5 +135,22 @@ def suspension_check():
                 if customer.suspension_start >= date >= customer.suspension_end:
                     customer.suspension = True
                     customer.save()
+
+def get_coord(customer):
+    if customer.lat == None or customer.lng == None:
+        gmaps = googlemaps.Client(key=api.google_maps_api_key)
+        latlng = gmaps.geocode(customer.address)
+        latlng = latlng[0]
+        latlng = latlng['geometry']['location']
+        customer.lat = latlng['lat']
+        customer.lng = latlng['lng']
+        customer.save()
+        return latlng
+    else:
+        latlng = {
+            'lat':customer.lat,
+            'lng':customer.lng
+        }
+        return latlng
 
 

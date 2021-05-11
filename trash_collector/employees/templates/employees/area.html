@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+ {% load static %}
+
+{% block script %}
+  <head>
+    <title>Add Map</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'employees/styles.css' %}" />
+    <script src="{% static 'employees/map.js' %}"></script>
+  </head>
+{% endblock %}
+{% block title %}{% block header %} Today's Schedule {% endblock %}{% endblock %}
+{% block navbar %}
+<li class="nav-item">
+  <a class="nav-link active" href="{% url 'employees:today' %}">Today's Schedule</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'employees:scheduler' %}">Future Routes</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'employees:customers_in_area' %}">Assigned Customers</a>
+</li>
+{% endblock %}
+{% block content %}
+  {% if user.is_authenticated and employee_exists != True  %}
+    Click below for employee orientation!
+    <a href="{% url 'employees:onboard' %}">Onboard</a>
+  {% elif user.is_authenticated %}
+<h3>Hello Employee {{ user.username }}!</h3><br>
+<h4>Your schedule for today is:</h4>
+<ul>
+  <form action="{% url 'employees:today' %}" method="post">
+    {% csrf_token %}
+{% for customer in customers %}
+  <li>
+    <ul>
+      <li>{{customer.name}}</li>
+      <li>{{customer.address}}</li>
+      <li><input type="checkbox" class="form-check-input" name="{{customer.id}}" id={{customer.id}}> Pickup Completed</li>
+      {% if customer.pickup_day != day %}
+      <ul>
+      <li>This is a One Time Pickup</li>
+      </ul>
+      {% endif %}
+    </ul>
+  </li>
+{% endfor %}
+  </ul>
+<input type="submit" value="Submit Pickups" class="btn btn-dark"></form>
+     <h3>Your suggested route for today!</h3>
+    <!--The div element for the map -->
+    <div id="map"></div>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap"
+      async
+    ></script>
+
+  {% else %}
+    <p>You are at the employee Daily Schedule, but you are not logged in.</p>
+    <a href="{% url 'login' %}">Log In</a>
+    <a href="{% url 'accounts:register' %}">Sign Up</a>
+  {% endif %}
+{% endblock %}

@@ -12,4 +12,6 @@ class Customer(models.Model):
     suspension_end = models.DateField(blank=True, null=True)
     zipcode = models.CharField(max_length=15, blank=True, null=True)
     address = models.CharField(max_length=50, blank=True, null=True)
+    lat = models.FloatField(default=None, blank=True, null=True)
+    lng = models.FloatField(default=None, blank=True, null=True)
 
