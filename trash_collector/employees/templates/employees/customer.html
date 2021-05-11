@@ -27,8 +27,7 @@
   {% elif user.is_authenticated %}
 <h3>Hello Employee {{ user.username }}!</h3><br>
 <h4>Details for Customer:</h4>
-<ul>
-  <li>
+
     <ul>
       <li>Name: {{customer.name}}</li>
       <li>Address: {{customer.address}}</li>
@@ -41,8 +40,7 @@
         {% endif %}
 
     </ul>
-  </li>
-  </ul>
+
 
     <!--The div element for the map -->
     <div id="map"></div>
