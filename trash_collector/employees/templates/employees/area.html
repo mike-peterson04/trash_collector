@@ -17,6 +17,7 @@
 </li>
 <li class="nav-item">
   <a class="nav-link active" href="{% url 'employees:area' %}">Assigned Customers</a>
+
 </li>
 {% endblock %}
 {% block content %}
@@ -27,12 +28,17 @@
 <h3>Hello Employee {{ user.username }}!</h3><br>
 <h4>Here are all the customers in your area</h4>
 <ul>
+<<<<<<< HEAD
+=======
+  <form action="{% url 'employees:customer' %}" method="post">
+>>>>>>> 5e7e1a8748aa3ed833deeb532fe182903fb8c532
     {% csrf_token %}
 {% for customer in customers %}
   <li>
     <ul>
       <li>{{customer.name}}</li>
       <li>{{customer.address}}</li>
+<<<<<<< HEAD
       <form action="{% url 'employees:customer' customer.id %}" method="post">
     {% csrf_token %}
   <input type="submit" value="View Customer" class="btn btn-dark">
@@ -42,6 +48,13 @@
   </li>
 {% endfor %}
   </ul>
+=======
+      <li><input type="submit" value="View Customer" class="btn btn-dark" name="{{customer.id}}" id={{customer.id}}></li>
+    </ul>
+  </li>
+{% endfor %}
+  </form></ul>
+>>>>>>> 5e7e1a8748aa3ed833deeb532fe182903fb8c532
 
   {% else %}
     <p>You are at the employee Daily Schedule, but you are not logged in.</p>
