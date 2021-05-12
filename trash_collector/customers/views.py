@@ -34,23 +34,36 @@ def pickup_day(request):
 def suspend(request):
     user = request.user
     context = context_gen(user)
+    if context['customer'].suspension:
+        return render(request, 'customers/resume.html', context)
     if request.method == 'POST':
         context['customer'].suspension_start = request.POST.get('start_date')
         context['customer'].suspension_end = request.POST.get('end_date')
+        context['customer'].suspension = True
         date_check = context['customer'].suspension_start.split('-')
         count = 0
         for x in date_check:
             date_check[count] = int(x)
             count += 1
-
         if datetime.datetime(date_check[0], date_check[1], date_check[2]) > datetime.datetime.now():
             context['customer'].suspension = False
         else:
             context['customer'].suspension = True
         context['customer'].save()
-        return HttpResponseRedirect(reverse('customers:suspend'))
-
+        return HttpResponseRedirect(reverse('customers:resume'))
     return render(request, 'customers/suspend.html', context)
+
+
+def resume(request):
+    user = request.user
+    context = context_gen(user)
+    if request.method == 'POST':
+        context['customer'].suspension_start = None
+        context['customer'].suspension_end = None
+        context['customer'].suspension = False
+        context['customer'].save()
+        return HttpResponseRedirect(reverse('customers:suspend'))
+    return render(request, 'customers/resume.html', context)
 
 
 def account_info(request):

@@ -15,7 +15,7 @@
 </li>
 {% endblock %}
 
-{% block header %}Schedule Suspension{% endblock %}
+{% block header %}Resume Service{% endblock %}
 
 {% block content %}
   {% if customer_exists != True and user.is_authenticated %}
@@ -26,18 +26,12 @@
     </form>
     {% elif user.is_authenticated %}
         <h1 align="center">Hello {{ user.username }}!</h1><br>
-            <table align="center" width="80%">
-                <tr>
-                    <td><form action="{% url 'customers:suspend' %}" method="post">
+            <h1>Your account is currently suspended.</h1><br>
+            <h3>Click below if you would like to resume your account early</h3><br>
+            <form action="{% url 'customers:resume' %}" method="post">
                 {% csrf_token %}
-            <div>
-                <h3>What day would you like to start suspending your service?</h3><br><input type="date" id="start_date" name="start_date"><br>
-                <h3>What day would you like to resume your service?</h3><br><input type="date" id="end_date" name="end_date"><br>
-                </div>
-            <input type="submit" value="Apply" class="btn btn-dark">
-            </form></td>
-                </tr>
-            </table>
+                <input type="submit" value="Resume Service Now" class="btn-btn-dark">
+            </form>
     {% else %}
     <p>You are at the customer index, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>

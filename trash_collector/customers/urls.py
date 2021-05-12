@@ -10,5 +10,6 @@ urlpatterns = [
     path('pickup_day/', views.pickup_day, name="pickup_day"),
     path('suspend/', views.suspend, name="suspend"),
     path('account_info/', views.account_info, name="account_info"),
-    path('onboard/', views.onboard, name="onboard")
+    path('onboard/', views.onboard, name="onboard"),
+    path('resume/', views.resume, name="resume")
 ]
