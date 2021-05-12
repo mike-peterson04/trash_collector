@@ -5,22 +5,25 @@
 
 {% block navbar %}
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'customers:pickup_day' %}">Service Day</a>
+  <a class="nav-link active" href="{% url 'customers:pickup_day' %}">Service Day</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="{% url 'customers:suspend' %}">Schedule Suspension</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link active" href="{% url 'customers:account_info' %}">Account Info</a>
+  <a class="nav-link" href="{% url 'customers:account_info' %}">Account Info</a>
 </li>
 {% endblock %}
 
-{% block header %} Account Info {% endblock %}
+{% block header %} Pickup Day {% endblock %}
 
 {% block content %}
   {% if customer_exists != True and user.is_authenticated %}
     Hey we see you aren't registered yet. Click below for onboarding!
-    <a href="{% url 'customers:onboard' %}">Onboard</a>
+    <form action="{% url 'customers:onboard' %}">
+        {% csrf_token %}
+        <input type="submit" value="Onboard" class="btn btn-dark">
+    </form>
   {% elif user.is_authenticated %}
     <h1 align="center">Hello {{ user.username }}!</h1><br>
     <table align="center" width="80%">
@@ -31,19 +34,19 @@
       <tr>
         {% if customer.one_time_pickup != None %}
         <td colspan="2">
-          <h3> You currently have a one time pickup scheduled for {{customer.one_time_pickup}}</h3>
+          <h3 align="center"> You currently have a one time pickup scheduled for {{customer.one_time_pickup}}</h3></td>
           {% else %}
-          <td><h3 align="center">Please let us know if you want to schedule a one time pickup</h3></td>
-        <td><form action="{% url 'customers:pickup_day' %}" method="post">
-        {% csrf_token %}
-          <h3>What day should we come:</h3><br><input type="date" id="date" name="date"><br>
+          <td colspan="2"><h3 align="center">Please let us know if you want to schedule a one time pickup</h3></td>
+              </tr>
+        <tr>
+          <td colspan="2"><form align="center" action="{% url 'customers:pickup_day' %}" method="post">
+            {% csrf_token %}
+            <h3>What day should we come:</h3><br><input type="date" id="date" name="date"><br>
             <input type="submit" value="Update Account Info" class="btn btn-dark">
-        </form>
-          {% endif %}
-
-        </td>
-
-      </tr>
+            </form>
+          </td>
+        </tr>
+        {% endif %}
     </table>
   {% else %}
     <p>You are at the customer index, but you are not logged in.</p>
