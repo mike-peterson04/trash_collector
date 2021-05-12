@@ -24,16 +24,14 @@
       <button type="button" id="checkout-button" class="btn btn-dark">Checkout</button>
     </section>
   {% csrf_token %}
-
-{% endblock %}
 <script type="text/javascript">
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     // Create an instance of the Stripe object with your publishable API key
-    var stripe = Stripe("{{key}}");
+    var stripe = Stripe("pk_test_51Iq1pdBzs8378IVoHzXAk7yqOULMvLiO84TtPFQ2dpUYl79IVauASBcL5YrUS4Vswrf8ni9CKrI05bG9oPct812q00ymattIoH");
     var checkoutButton = document.getElementById("checkout-button");
 
     checkoutButton.addEventListener("click", function () {
-      fetch("{% url 'customers:create_checkout_session' customer.id %}", {
+      fetch("http://127.0.0.1:8000{% url 'customers:create_checkout_session' customer.id %}", {
         method: "POST",
         headers:{
         'X-CSRFToken':csrftoken
@@ -58,3 +56,4 @@
         });
     });
   </script>
+{% endblock %}

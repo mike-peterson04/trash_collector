@@ -102,7 +102,7 @@ def context_gen(user):
 def make_payment(request):
     user = request.user
     context = context_gen(user)
-    context['key'] = api.stripe_api_key
+    context['key'] = api.stripe_api_public
     return render(request, 'customers/checkout.html', context)
 
 
