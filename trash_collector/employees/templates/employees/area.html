@@ -33,7 +33,11 @@
     <ul>
       <li>{{customer.name}}</li>
       <li>{{customer.address}}</li>
-      <a href="{% url 'employees:customer' customer.id %}" class="btn-btn-primary">View Customer</a>
+      <form action="{% url 'employees:customer' customer.id %}" method="post">
+    {% csrf_token %}
+  <input type="submit" value="View Customer" class="btn btn-dark">
+        </form>
+
     </ul>
   </li>
 {% endfor %}
