@@ -99,6 +99,18 @@ def context_gen(user):
     return context
 
 
+def pay_success(request):
+    user = request.user
+    context = context_gen(user)
+    context['customer'].account_balance = 0.00
+    context['customer'].save()
+    return HttpResponseRedirect(reverse('customers:account_info'))
+
+
+def pay_fail(request):
+    return HttpResponseRedirect(reverse('customers:account_info'))
+
+
 def make_payment(request):
     user = request.user
     context = context_gen(user)
@@ -108,6 +120,7 @@ def make_payment(request):
 
 class CreateCheckoutSessionView(View):
     def post(self,request, *args, **kwargs):
+        stripe.api_key = api.stripe_api_key
         customer_id = self.kwargs['customer_id']
         customer = Customer.objects.get(pk=customer_id)
         domain = 'http://127.0.0.1:8000'
@@ -118,12 +131,15 @@ class CreateCheckoutSessionView(View):
                     'price_data': {
                         'currency': 'usd',
                         'unit_amount': int(customer.account_balance*100),
-                    },
+                        'product_data': {
+                            'name': 'Municipal Trash Collection',}
+                        },
+                    'quantity' : 1
                 },
             ],
             mode='payment',
-            success_url=domain + '/success',
-            cancel_url=domain + '/cancel',
+            success_url=domain + '/customers/success/',
+            cancel_url=domain + '/customers/cancel/',
         )
         return JsonResponse({
             'id': checkout_session.id
