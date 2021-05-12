@@ -20,7 +20,11 @@
 {% block content %}
   {% if customer_exists != True and user.is_authenticated %}
     Hey we see you aren't registered yet. Click below for onboarding!
-    <a href="{% url 'customers:onboard' %}">Onboard</a>
+    <form action="{% url 'customers:onboard' %}">
+        {% csrf_token %}
+        <input type="submit" value="Onboard" class="btn btn-dark">
+    </form>
+
   {% elif user.is_authenticated %}
     Hello Customer {{ user.username }}!
   {% else %}

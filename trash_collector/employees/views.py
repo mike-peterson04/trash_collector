@@ -143,8 +143,22 @@ def suspension_check():
                     customer.suspension = True
                     customer.save()
 
+
+def customer(request, customer_id):
+    user = request.user
+    suspension_check()
+    context = context_gen(user)
+    Customer = apps.get_model('customers.Customer')
+    customer = Customer.objects.get(pk=customer_id)
+    context['customer'] = customer
+    context['lat'] = customer.lat
+    context['long'] = customer.lng
+    context['key'] = api.google_maps_api_key
+    return render(request, 'employees/customer.html', context)
+
+
 def get_coord(customer):
-    if customer.lat == None or customer.lng == None:
+    if customer.lat is None or customer.lng is None:
         gmaps = googlemaps.Client(key=api.google_maps_api_key)
         latlng = gmaps.geocode(customer.address)
         latlng = latlng[0]

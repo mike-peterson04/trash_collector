@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+ {% load static %}
+
+{% block script %}
+  <head>
+    <title>Add Map</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'employees/styles.css' %}" />
+  </head>
+{% endblock %}
+{% block title %}{% block header %} {{customer.name}} {% endblock %}{% endblock %}
+{% block navbar %}
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'employees:today' %}">Today's Schedule</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'employees:scheduler' %}">Future Routes</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link active" href="{% url 'employees:area' %}">Assigned Customers</a>
+</li>
+{% endblock %}
+{% block content %}
+  {% if user.is_authenticated and employee_exists != True  %}
+    Click below for employee orientation!
+    <a href="{% url 'employees:onboard' %}">Onboard</a>
+  {% elif user.is_authenticated %}
+<h3>Hello Employee {{ user.username }}!</h3><br>
+<h4>Details for Customer:</h4>
+
+    <ul>
+      <li>Name: {{customer.name}}</li>
+      <li>Address: {{customer.address}}</li>
+        <li>Zipcode: {{customer.zipcode}}</li>
+        <li>Account Balance: {{customer.account_balance}}</li>
+        {% if customer.suspension %}
+        <li>Account currently suspended</li>
+        {% else %}
+        <li>Account Active</li>
+        {% endif %}
+
+    </ul>
+
+
+    <!--The div element for the map -->
+    <div id="map"></div>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<script>
+  function buildMap(){
+  var mapProp= {
+  center:new google.maps.LatLng({{lat}},{{long}}),
+  zoom:15,
+  }
+  var map = new google.maps.Map(document.getElementById("map"),mapProp);
+
+  let latlng{{customer.id}} = {lat:{{customer.lat}}, lng:{{customer.lng}}}
+  let marker{{customer.id}} = new google.maps.Marker({position:latlng{{customer.id}}});
+  marker{{customer.id}}.setMap(map);
+
+  }
+</script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=buildMap"
+
+      async
+    ></script>
+
+  {% else %}
+    <p>You are at a customer's detail page, but you are not logged in.</p>
+    <a href="{% url 'login' %}">Log In</a>
+    <a href="{% url 'accounts:register' %}">Sign Up</a>
+  {% endif %}
+{% endblock %}

@@ -10,8 +10,15 @@
   <p><a href="{% url 'logout' %}">Log Out</a></p>
 {% else %}
   <p>You are not logged in. Please log in or create an account.</p>
-  <a href="{% url 'login' %}">Log In</a>
-  <a href="{% url 'accounts:register' %}">Sign Up</a>
+  <form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Log In" class="btn btn-dark">
+  </form>
+  <form action="{% url 'accounts:register' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Sign Up" class="btn btn-dark">
+  </form>
+
 {% endif %}
 {% endblock %}
 

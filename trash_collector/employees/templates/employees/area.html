@@ -1,46 +1,45 @@
 {% extends 'base.html' %}
  {% load static %}
-
 {% block script %}
   <head>
     <title>Add Map</title>
     <link rel="stylesheet" type="text/css" href="{% static 'employees/styles.css' %}" />
-    <script src="{% static 'employees/map.js' %}"></script>
   </head>
 {% endblock %}
 {% block title %}{% block header %} Today's Schedule {% endblock %}{% endblock %}
 {% block navbar %}
 <li class="nav-item">
-  <a class="nav-link active" href="{% url 'employees:today' %}">Today's Schedule</a>
+  <a class="nav-link" href="{% url 'employees:today' %}">Today's Schedule</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="{% url 'employees:scheduler' %}">Future Routes</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'employees:area' %}">Assigned Customers</a>
+  <a class="nav-link active" href="{% url 'employees:area' %}">Assigned Customers</a>
 </li>
 {% endblock %}
 {% block content %}
   {% if user.is_authenticated and employee_exists != True  %}
-    Click below for employee orientation!
-    <a href="{% url 'employees:onboard' %}">Onboard</a>
+    Click below for employee orientation!<br>
+    <a href="{% url 'employees:onboard' %}" class="btn btn-dark">Onboard</a>
   {% elif user.is_authenticated %}
 <h3>Hello Employee {{ user.username }}!</h3><br>
 <h4>Here are all the customers in your area</h4>
 <ul>
-  <form action="{% url 'employees:customer' %}" method="post">
     {% csrf_token %}
 {% for customer in customers %}
   <li>
     <ul>
       <li>{{customer.name}}</li>
       <li>{{customer.address}}</li>
-      <li><input type="submit" value="View Customer" class="btn btn-dark" name="{{customer.id}}" id={{customer.id}}></li>
+      <form action="{% url 'employees:customer' customer.id %}" method="post">
+    {% csrf_token %}
+  <input type="submit" value="View Customer" class="btn btn-dark">
+        </form>
     </ul>
   </li>
 {% endfor %}
-  </form></ul>
-
+  </ul>
   {% else %}
     <p>You are at the employee Daily Schedule, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>

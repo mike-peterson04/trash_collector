@@ -2,13 +2,13 @@
 
 {% block title %} Login Page {% endblock %}
 
-{% block header %} Login Page {% endblock %}
+{% block header %}{% endblock %}
 
 {% block content %}
 <h2>Log In</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Log In</button>
+    <input type="submit" value="Log In" class="btn btn-dark">
 </form>
 {% endblock %}

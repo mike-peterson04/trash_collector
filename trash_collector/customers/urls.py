@@ -1,8 +1,6 @@
 from django.urls import path
-
+from .views import CreateCheckoutSessionView
 from . import views
-
-# TODO: Determine what distinct pages are required for the customer user stories, add a path for each in urlpatterns
 
 app_name = "customers"
 urlpatterns = [
@@ -10,5 +8,9 @@ urlpatterns = [
     path('pickup_day/', views.pickup_day, name="pickup_day"),
     path('suspend/', views.suspend, name="suspend"),
     path('account_info/', views.account_info, name="account_info"),
+    path('make_payment/', views.make_payment, name='checkout'),
+    path('create_checkout_session/<int:customer_id>', CreateCheckoutSessionView.as_view(), name='create_checkout_session'),
+    path('success/', views.pay_success, name="success"),
+    path('cancel/',views.pay_fail, name="cancel"),
     path('onboard/', views.onboard, name="onboard")
 ]

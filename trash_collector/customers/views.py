@@ -1,8 +1,11 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views import View
 from .models import Customer
 import datetime
+import api
+import stripe
 
 # Create your views here.
 
@@ -94,3 +97,50 @@ def context_gen(user):
             "customer": Customer(name='null', user=user, pickup_day="null", address='address', zipcode='zip')
         }
     return context
+
+
+def pay_success(request):
+    user = request.user
+    context = context_gen(user)
+    context['customer'].account_balance = 0.00
+    context['customer'].save()
+    return HttpResponseRedirect(reverse('customers:account_info'))
+
+
+def pay_fail(request):
+    return HttpResponseRedirect(reverse('customers:account_info'))
+
+
+def make_payment(request):
+    user = request.user
+    context = context_gen(user)
+    context['key'] = api.stripe_api_public
+    return render(request, 'customers/checkout.html', context)
+
+
+class CreateCheckoutSessionView(View):
+    def post(self,request, *args, **kwargs):
+        stripe.api_key = api.stripe_api_key
+        customer_id = self.kwargs['customer_id']
+        customer = Customer.objects.get(pk=customer_id)
+        domain = 'http://127.0.0.1:8000'
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': int(customer.account_balance*100),
+                        'product_data': {
+                            'name': 'Municipal Trash Collection',}
+                        },
+                    'quantity' : 1
+                },
+            ],
+            mode='payment',
+            success_url=domain + '/customers/success/',
+            cancel_url=domain + '/customers/cancel/',
+        )
+        return JsonResponse({
+            'id': checkout_session.id
+        })
