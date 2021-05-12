@@ -60,7 +60,6 @@ def pickup_complete(customer):
 
 
 def future_route(request):
-    suspension_check()
     user = request.user
     context = context_gen(user)
     if request.method == 'POST':
@@ -71,10 +70,12 @@ def future_route(request):
             date_check[count] = int(x)
             count += 1
         date = datetime.datetime(date_check[0], date_check[1], date_check[2])
+        suspension_check(date.date(), False)
         day = date.strftime("%A")
         Customer = apps.get_model('customers.Customer')
         result = Customer.objects.filter(Q(zipcode=context["employee"].area), Q(suspension=False),
                                          Q(pickup_day=day) | Q(one_time_pickup=date))
+        suspension_check()
         context['customers'] = result
         context['day'] = day
         return render(request, 'employees/scheduler.html', context)
@@ -124,22 +125,28 @@ def context_gen(user):
         }
     return context
 
-def suspension_check():
+
+def suspension_check(date=None, today=True):
     Customer = apps.get_model('customers.Customer')
-    date = datetime.date.today()
     dataset = Customer.objects.all()
+    if date is None:
+        date = datetime.date.today()
     for customer in dataset:
-        if customer.suspension == True:
-            if customer.suspension_end <= date:
+        if customer.suspension:
+            if today:
+                if customer.suspension_end <= date:
+                    customer.suspension = False
+                    customer.suspension_start = None
+                    customer.suspension_end = None
+                    customer.save()
+            else:
                 customer.suspension = False
-                customer.suspension_start = None
-                customer.suspension_end = None
                 customer.save()
         else:
-            if customer.suspension_start == None:
+            if customer.suspension_start is None:
                 pass
             else:
-                if customer.suspension_start >= date >= customer.suspension_end:
+                if customer.suspension_start <= date <= customer.suspension_end:
                     customer.suspension = True
                     customer.save()
 
@@ -151,6 +158,7 @@ def customer(request, customer_id):
     Customer = apps.get_model('customers.Customer')
     customer = Customer.objects.get(pk=customer_id)
     context['customer'] = customer
+    get_coord(context['customer'])
     context['lat'] = customer.lat
     context['long'] = customer.lng
     context['key'] = api.google_maps_api_key

@@ -3,13 +3,12 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
 from .models import Customer
+from django.apps import apps
 import datetime
 import api
 import stripe
 
 # Create your views here.
-
-# TODO: Create a function for each path created in customers/urls.py. Each will need a template as well.
 
 
 def index(request):
@@ -18,9 +17,8 @@ def index(request):
     # It will be necessary while creating a customer/employee to assign the logged-in user as the user foreign key
     # This will allow you to later query the database using the logged-in user,
     # thereby finding the customer/employee profile that matches with the logged-in user.
-    print(user)
     context = context_gen(user)
-
+    suspension_check()
     return render(request, 'customers/index.html', context)
 
 
@@ -37,23 +35,36 @@ def pickup_day(request):
 def suspend(request):
     user = request.user
     context = context_gen(user)
+    if context['customer'].suspension:
+        return render(request, 'customers/resume.html', context)
     if request.method == 'POST':
         context['customer'].suspension_start = request.POST.get('start_date')
         context['customer'].suspension_end = request.POST.get('end_date')
+        context['customer'].suspension = True
         date_check = context['customer'].suspension_start.split('-')
         count = 0
         for x in date_check:
             date_check[count] = int(x)
             count += 1
-
         if datetime.datetime(date_check[0], date_check[1], date_check[2]) > datetime.datetime.now():
             context['customer'].suspension = False
         else:
             context['customer'].suspension = True
         context['customer'].save()
-        return HttpResponseRedirect(reverse('customers:suspend'))
-
+        return HttpResponseRedirect(reverse('customers:resume'))
     return render(request, 'customers/suspend.html', context)
+
+
+def resume(request):
+    user = request.user
+    context = context_gen(user)
+    if request.method == 'POST':
+        context['customer'].suspension_start = None
+        context['customer'].suspension_end = None
+        context['customer'].suspension = False
+        context['customer'].save()
+        return HttpResponseRedirect(reverse('customers:suspend'))
+    return render(request, 'customers/resume.html', context)
 
 
 def account_info(request):
@@ -144,3 +155,23 @@ class CreateCheckoutSessionView(View):
         return JsonResponse({
             'id': checkout_session.id
         })
+
+
+def suspension_check():
+    Customer = apps.get_model('customers.Customer')
+    date = datetime.date.today()
+    dataset = Customer.objects.all()
+    for customer in dataset:
+        if customer.suspension == True:
+            if customer.suspension_end <= date:
+                customer.suspension = False
+                customer.suspension_start = None
+                customer.suspension_end = None
+                customer.save()
+        else:
+            if customer.suspension_start == None:
+                pass
+            else:
+                if customer.suspension_start >= date >= customer.suspension_end:
+                    customer.suspension = True
+                    customer.save()
