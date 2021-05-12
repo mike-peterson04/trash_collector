@@ -47,7 +47,7 @@
         </tr>
         <tr>
             <td colspan="2"> <h3 align="center">You currently owe {{customer.account_balance}} in service fees<br>
-            <a href="#" class="btn btn-dark">click here to pay</a></h3></td>
+            <a href="{% url 'customers:checkout' %}" class="btn btn-dark">click here to pay</a></h3></td>
         </tr>
     </table>
   {% else %}
