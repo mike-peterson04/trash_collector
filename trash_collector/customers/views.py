@@ -34,6 +34,7 @@ def pickup_day(request):
 
 def suspend(request):
     user = request.user
+    suspension_check()
     context = context_gen(user)
     if context['customer'].suspension:
         return render(request, 'customers/resume.html', context)
