@@ -22,7 +22,7 @@
     Hey we see you aren't registered yet. Click below for onboarding!
     <form action="{% url 'customers:onboard' %}">
         {% csrf_token %}
-        <input type="submit" value="Onboard" class="btn btn-dark">
+        <input type="submit" value="Onboard" class="btn-btn-dark">
     </form>
     {% elif user.is_authenticated %}
         <h1 align="center">Hello {{ user.username }}!</h1><br>
@@ -30,7 +30,7 @@
             <h3>Click below if you would like to resume your account early</h3><br>
             <form action="{% url 'customers:resume' %}" method="post">
                 {% csrf_token %}
-                <input type="submit" value="Resume Service Now" class="btn-btn-dark">
+                <input type="submit" value="Resume Service Now" class="btn btn-dark">
             </form>
     {% else %}
     <p>You are at the customer index, but you are not logged in.</p>
