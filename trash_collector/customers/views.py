@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from .models import Customer
+from django.apps import apps
 import datetime
 
 # Create your views here.
@@ -15,9 +16,8 @@ def index(request):
     # It will be necessary while creating a customer/employee to assign the logged-in user as the user foreign key
     # This will allow you to later query the database using the logged-in user,
     # thereby finding the customer/employee profile that matches with the logged-in user.
-    print(user)
     context = context_gen(user)
-
+    suspension_check()
     return render(request, 'customers/index.html', context)
 
 
@@ -107,3 +107,23 @@ def context_gen(user):
             "customer": Customer(name='null', user=user, pickup_day="null", address='address', zipcode='zip')
         }
     return context
+
+
+def suspension_check():
+    Customer = apps.get_model('customers.Customer')
+    date = datetime.date.today()
+    dataset = Customer.objects.all()
+    for customer in dataset:
+        if customer.suspension == True:
+            if customer.suspension_end <= date:
+                customer.suspension = False
+                customer.suspension_start = None
+                customer.suspension_end = None
+                customer.save()
+        else:
+            if customer.suspension_start == None:
+                pass
+            else:
+                if customer.suspension_start >= date >= customer.suspension_end:
+                    customer.suspension = True
+                    customer.save()
