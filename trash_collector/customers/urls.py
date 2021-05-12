@@ -10,5 +10,7 @@ urlpatterns = [
     path('account_info/', views.account_info, name="account_info"),
     path('make_payment/', views.make_payment, name='checkout'),
     path('create_checkout_session/<int:customer_id>', CreateCheckoutSessionView.as_view(), name='create_checkout_session'),
+    path('success/', views.pay_success, name="success"),
+    path('cancel/',views.pay_fail, name="cancel"),
     path('onboard/', views.onboard, name="onboard")
 ]
